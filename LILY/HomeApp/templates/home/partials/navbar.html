@@ -1,0 +1,99 @@
+{% load static%}
+<header class="header">
+        
+        <div class="alert">
+            <div class="container">
+                <p class="alert-text">
+                    Free Shipping All Over Egypt for orders Above 300L.E
+                </p>
+            </div>
+        </div>
+
+       <div class="header-top" data-header>
+            <div class="container">
+                <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
+                    <span class="line line-1"></span>
+                    <span class="line line-2"></span>
+                    <span class="line line-3"></span>
+                </button>
+                
+                <a href="#" class="logo">
+                    <img src="{% static 'images/logo1.png'%}" width="270" height="30" alt="LILY">
+                </a>
+                
+                <nav class="navbar">
+                    <ul class="navbar-list">
+                        <li><a href="{% url 'home' %}" class="navbar-link has-after">Home</a></li>
+                        <li><a href="{% url 'collection' %}" class="navbar-link has-after">Collection</a></li>
+                        <li><a href="{% url 'offers'%}" class="navbar-link has-after">Offer</a></li>
+                        <li><a href="{% url 'categories'%}" class="navbar-link has-after">Category</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    {% if user.is_authenticated %}
+                    <button class="header-action-btn" aria-label="user">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </button>
+                    
+                    <button class="header-action-btn" aria-label="favourite item">
+                        <ion-icon name="star-outline"></ion-icon>
+                        <span class="btn-badge">0</span>
+                    </button>
+                    
+                    <button class="header-action-btn" aria-label="cart item">
+                        <ion-icon name="bag-handle-outline"></ion-icon>
+                        <span class="btn-badge">0</span>
+                    </button>
+
+                        <form method="post" action="{% url 'logout'%}">
+                            {%csrf_token%}
+                            <button type="submit" class="header-action-btn" aria-label="logout">
+                                <ion-icon name="log-out-outline"></ion-icon>
+                            </button>
+                        </form>
+
+                    {% else %}
+                        <button class="header-action-btn" aria-label="login">
+                            <a href="{% url 'login'%}">
+                                <ion-icon name="log-in-outline"></ion-icon>
+                            </a>
+                        </button>
+                        <button class="header-action-btn" aria-label="signup">
+                            <a href="{% url 'signup'%}">
+                                <ion-icon name="person-add-outline"></ion-icon>
+                            </a>
+                        </button>
+                    {% endif%}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <div class="mobile-navbar" data-navbar>
+            <div class="wrapper">
+                <a href="" class="logo">
+                    <img src="{% static 'images/logo.png'%}" width="179" height="26" alt="LILY">
+                </a>
+                <button class="nav-close-btn" aria-label="close menu" data-nav-close>
+                    <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+                </button>
+            </div>
+            <ul class="navbar-list">
+                <li>
+                    <a href="#home" class="navbar-link has-after" data-nav-link>Home</a>
+                </li>
+                <li>
+                    <a href="#collection" class="navbar-link has-after" data-nav-link>Collection</a>
+                </li>
+                <li>
+                    <a href="#offer" class="navbar-link has-after" data-nav-link>Offer</a>
+                </li>
+                <li>
+                    <a href="#categories" class="navbar-link has-after" data-nav-link>Category</a>
+                </li>
+            </ul>
+        </div>
+        <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
