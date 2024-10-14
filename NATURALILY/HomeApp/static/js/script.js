@@ -183,17 +183,35 @@ window.onload = function () {
 
     }
 
-    const incQuantityUrl = document.querySelector("[data-item-quantity-inc]").getAttribute("inc-check-quantity-url");
-    const decQuantityUrl = document.querySelector("[data-item-quantity-dec]").getAttribute("dec-check-quantity-url");
-    addEventsOnQuantityBtns(incQuantityUrl, decQuantityUrl);
+    try {
+        const incQuantityUrl = document.querySelector("[data-item-quantity-inc]").getAttribute("inc-check-quantity-url");
+        const decQuantityUrl = document.querySelector("[data-item-quantity-dec]").getAttribute("dec-check-quantity-url");
+        addEventsOnQuantityBtns(incQuantityUrl, decQuantityUrl);
+    }
+    catch {
+        console.error('Error adding event listeners to increase and decrease buttons');
+    }
 
     /* function to send ajax call to backend to remove item from cart */
     const removeItem = async (event, removeItemUrl) => {
         try {
             const remove = event.target;
             const productPk = remove.getAttribute("product-id");
-            const response = await fetch(`${removeItemUrl}?productPk=${productPk}`);
+            const response = await fetch(`${removeItemUrl}?productPk=${productPk}`, {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            if (response.redirected) {
+                // if the response is a redirect, navigate to the redirect URL
+                window.location.href = response.url;
+                return;
+            }
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
             const data = await response.json();
+
             if (data.status === "200") {
                 const cartTotal = document.querySelector("[data-cart-total]");
                 cartTotal.innerHTML = data.cart_total;
@@ -210,19 +228,36 @@ window.onload = function () {
             console.error('Error removing item:', error);
         }
     };
-    const removeItemUrl = document.querySelector("[data-item-remove]").getAttribute("data-item-remove-url");
-    const removeItemBtn = document.querySelectorAll("[data-item-remove]");
-    removeItemBtn.forEach(item => {
-        addEventOnElem(item, 'click', (event) => removeItem(event, removeItemUrl));
-    });
+    try {
+        const removeItemUrl = document.querySelector("[data-item-remove]").getAttribute("data-item-remove-url");
+        const removeItemBtn = document.querySelectorAll("[data-item-remove]");
+        removeItemBtn.forEach(item => {
+            addEventOnElem(item, 'click', (event) => removeItem(event, removeItemUrl));
+        });
+    } catch {
+        console.error('Error adding event listeners to remove buttons');
+    }
 
     /* function to send ajax call to backend to remove item from cart */
     const removewish = async (event, removewishUrl) => {
         try {
             const remove = event.target;
             const productPk = remove.getAttribute("product-id");
-            const response = await fetch(`${removewishUrl}?productPk=${productPk}`);
+            const response = await fetch(`${removewishUrl}?productPk=${productPk}`, {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            if (response.redirected) {
+                // if the response is a redirect, navigate to the redirect URL
+                window.location.href = response.url;
+                return;
+            }
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
             const data = await response.json();
+
             if (data.status === "200") {
                 const cartTotal = document.querySelector("[data-cart-total]");
                 cartTotal.innerHTML = data.cart_total;
@@ -239,11 +274,17 @@ window.onload = function () {
             console.error('Error removing wish:', error);
         }
     };
-    const removewishUrl = document.querySelector("[data-wish-remove]").getAttribute("data-wish-remove-url");
-    const removewishBtn = document.querySelectorAll("[data-wish-remove]");
-    removewishBtn.forEach(wish => {
-        addEventOnElem(wish, 'click', (event) => removewish(event, removewishUrl));
-    });
+
+    try {
+        const removewishUrl = document.querySelector("[data-wish-remove]").getAttribute("data-wish-remove-url");
+        const removewishBtn = document.querySelectorAll("[data-wish-remove]");
+        removewishBtn.forEach(wish => {
+            addEventOnElem(wish, 'click', (event) => removewish(event, removewishUrl));
+        });
+
+    } catch {
+        console.error('Error adding event listeners to remove buttons');
+    }
 
 
     /** Display WishList */
@@ -263,26 +304,6 @@ window.onload = function () {
     addEventOnElem(wishlistToggler, "click", wishlistToggle);
     addEventOnElem(wishlistClose, "click", closeWishlist);
 
-
-    /*  AJAX setup to send cookie with csrf token with each request */
-    $.ajaxSetup({
-        headers: { "X-CSRFToken": getCookie("csrftoken") }
-    });
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 
     /** function that create html to be inserted after loading products for the requested page */
     let currentPage = 1;
@@ -368,49 +389,69 @@ window.onload = function () {
     }
 
     /* function that send ajax call to backend to add product to cart */
-    const addToCart = (event, addToCartUrl) => {
+    const addToCart = async (event, addToCartUrl) => {
         const addtocart = event.target;
         const productPk = addtocart.getAttribute("data-product-pk");
-        $.ajax({
-            url: addToCartUrl,
-            data: {
-                'productPk': productPk,
-            },
-            dataType: 'json',
-            success: function (data) {
-                if (data.status == 201) {
-                    /* edit cart total */
-                    const cartTotal = document.querySelector("[data-cart-total]");
-                    cartTotal.innerHTML = data.cart_total;
-                    console.log("add to cart");
-                    location.reload();
-                }
-                else {
-                    alert(data.message);
-                }
+        try {
+            const response = await fetch(`${addToCartUrl}?productPk=${productPk}`, {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            if (response.redirected) {
+                // if the response is a redirect, navigate to the redirect URL
+                window.location.href = response.url;
+                return;
             }
-        });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            if (data.status == 201) {
+                const cartTotal = document.querySelector("[data-cart-total]");
+                cartTotal.innerHTML = data.cart_total;
+                console.log("add to cart");
+                location.reload();
+            }
+            else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
     };
 
     /* function that send ajax call to backend to add product to wishlist */
-    const addToWishList = (event, addToWishListUrl) => {
+    const addToWishList = async (event, addToWishListUrl) => {
         const addtowishlist = event.target;
         const productPk = addtowishlist.getAttribute("data-product-pk");
-        $.ajax({
-            url: addToWishListUrl,
-            data: {
-                'productPk': productPk,
-            },
-            dataType: 'json',
-            success: function (data) {
-                if (data.status == 201) {
-                    location.reload();
-                }
-                else {
-                    alert(data.message);
-                }
+        try {
+            const response = await fetch(`${addToWishListUrl}?productPk=${productPk}`, {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            if (response.redirected) {
+                // if the response is a redirect, navigate to the redirect URL
+                window.location.href = response.url;
+                return;
             }
-        });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            if (data.status == 201) {
+                console.log("add to wish list ");
+                location.reload();
+            }
+            else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error adding product to wishlist: ', error);
+        }
     }
 
     /* adding events to add to cart and to add to wish list buttons */
@@ -439,7 +480,9 @@ window.onload = function () {
             const urlElement = document.querySelector("[our-products]");
             const url = urlElement ? urlElement.getAttribute('url') : '';
 
-            await loadProducts(currentPage, url);
+            if (url) {
+                await loadProducts(currentPage, url);
+            }
             await addEventsOnWishlistCartBtns(addToCartUrl, addToWishListUrl);
 
             nextButton.addEventListener('click', async function () {
