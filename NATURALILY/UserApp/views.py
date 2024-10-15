@@ -3,6 +3,9 @@ from django.contrib.auth import login, logout
 from .forms import SignUpForm, UpdateForm
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView
+from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def signUpView(request):
@@ -21,9 +24,12 @@ def logOutView(request):
     logout(request)
     return redirect('home')
 
+class UserDetailView(DetailView, LoginRequiredMixin):
+    model = User
+    template_name = "UserApp/user_profile.html"
 
 @login_required
-def userProfileView(request, pk):
+def userUpdateProfileView(request, pk):
     if request.method == 'POST':
         if request.user.pk != pk:
             raise PermissionDenied("You are not authorized to do this action.")
@@ -34,7 +40,7 @@ def userProfileView(request, pk):
     else:
         form = UpdateForm(instance=request.user)
         form.fields['phone'].initial = request.user.shopUser.phone
-    return render(request, 'UserApp/profile.html', {'form': form})
+    return render(request, 'UserApp/update_user_profile.html', {'form': form})
 
 
 @login_required

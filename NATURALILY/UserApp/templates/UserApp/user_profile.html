@@ -1,0 +1,63 @@
+{% extends "home/base.html" %}
+{% load static %}
+{%block title%} <title>Your Profile</title> {% endblock title%}
+{% block hero %} 
+ <div class="product-container">
+    <div class="product-container-left">
+        <img src="{{ user.shopUser.img.url }}">
+    </div>
+    <div class="product-container-right">
+        <div class="user-account-info">
+                <div class="user-info">
+                    <h3>Username:</h3>
+                    <p>{{user.username}}</p>                    
+                    <h3>First Name:</h3>
+                    <p>{{user.first_name}}</p>
+                    <h3>Last Name:</h3>
+                    <p>{{user.last_name}}</p>
+                    <h3>Email:</h3>
+                    <p>{{user.email}}</p>
+                    <h3>Phone Number:</h3>
+                    <p>{{user.shopUser.phone}}</p>
+                </div>
+                <div class="user-buttons">
+                    <a href="{% url 'update_profile' user.pk%}" class="btn btn-primary" style="margin:0; text-decoration:none;">Update</a>
+                    <a href="{% url 'delete_profile' user.pk %}" class="btn btn-primary" style="background-color: red;">Delete</a>
+                </div>
+            </div>
+            <div class="user-orders">
+               <h3>Your Previous Orders:</h3>
+                <table class="user-orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Order Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in user.shopUser.orders.all|slice:":3" %}
+                        <tr class="order">
+                            <td>{{ order.id }}</td>
+                            <td>
+                                <p><strong>Order Date:</strong> {{ order.ordered_at }}</p>
+                                <p><strong>Order Status:</strong> {{ order.state }}</p>
+                                <p><strong>Total Price: </strong> {{order.total_price}}</p>
+                                <p><strong>Order Delivery Destination:</strong> {{ order.delivery_destination }}</p>
+                                <a href="{% url 'order_details' order.id%}" >Details....</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="arrows" style="margin-top:20px">
+                    <button class="right" aria-label="arrow-forward">
+                        <a href="{% url 'orders_history'%}">
+                            <ion-icon class="arrow-back-action-btn" name="arrow-forward-outline"></ion-icon>
+                        </a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock hero%}
