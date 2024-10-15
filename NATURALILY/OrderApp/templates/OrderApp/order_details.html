@@ -1,0 +1,61 @@
+{% extends "home/base.html" %}
+{% load static%}
+{% block title%} <title> Order </title> {% endblock title%}
+
+{% block bestsellersCollection %}
+<div class="checkout-container">
+    <div class="cart-checkout grid-item">
+        <div class="cart-header">
+            <h2 style="text-align: center; color:var(--black)";>Your Order</h2>
+        </div>
+        <div class="cart-content">
+            <table class="cart-table">
+                    <thead>
+                        <tr>
+                        <td></td>
+                        <td>Product</td>
+                        <td>Quantity</td>
+                        <td>Price Per Item</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if order.products %}
+                            {% for product in order.products.all %}
+                                <tr class="cart-item">
+                                    <td> <a href="{% url 'product' product.pk%}"><img src="{{product.product.img.url}}" alt="{{product.product.name}}"></a></td>
+                                    <td>{{product.product.name}}</td>
+                                    <td>
+                                        <div class="item-quantity">
+                                            <span class="cart-item-quantity">{{ product.quantity }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{product.product.price}}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+            </table>
+        </div>
+        <div class="cart-header">
+            <h2 style="text-align: center; color:var(--black)";>Order Information</h2>
+        </div>
+        <div class="order-info">
+                <p>Order ID: {{order.id}}</p>
+                <p> Order Date: {{order.ordered_at|date:"Y-m-d"}} </p>
+                <p> Order Status: {{order.state}} </p>
+                <p> First Name: {{order.firstname}} </p>
+                <p> Last Name: {{order.lastname}}</p>
+                <p> Phone : {{order.phone}}</p>
+                <p> Delivery Addresse : {{order.delivery_destination}}</p>
+                <p> Payment Method : {{order.payment_method}}</p>
+            </div>
+            <div class="cart-header">
+                    <h2 style="text-align: center; color:var(--black); margin-top:20px;";>Total</h2>
+            </div>
+            <div class="cart-total">
+                    <p class="cart-total-price" data-order-total>{{order.total_price}} L.E</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock bestsellersCollection%}

@@ -1,0 +1,85 @@
+{% extends "home/base.html" %}
+{% load static%}
+{% block title%} <title> Order </title> {% endblock title%}
+
+{% block bestsellersCollection %}
+<div class="checkout-container">
+    <div class="order-details grid-item">
+        <div class="cart-header">
+            <h2 style="text-align: center; color:var(--black)";>Order delivery details</h2>
+        </div>
+        <form id="paymentForm" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="firstname" id="firstname" class="form-control" required placeholder="First Name">
+            </div>
+            <div class="form-group">
+                <input type="text" name="lastname" id="lastname" class="form-control" required placeholder="Last Name">
+            </div>
+            <div class="form-group">
+                <input type="text" name="addresse" id="addresse" class="form-control" required placeholder="Addresse">
+            </div>
+            <div class="form-group">
+                <input type="text" name="phone" id="phone" class="form-control" required placeholder="Phone">
+            </div>
+            <div class="form-group delivery-method">
+                <label class="cart-header" for="payment_method">Payment Method:</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="cashOnDelivery" name="payment_method" value="cashOnDelivery" required data-COD-url="{% url 'order_accepted'%}">
+                        <label for="cashOnDelivery">Cash On Delivery</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="creditCard" name="payment_method" value="creditCard" required>
+                        <label for="creditCard">Credit Card</label>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" id="submitButton" value="Submit Order">
+        </form>
+    </div>
+    <div class="cart-checkout grid-item">
+        <div class="cart-header">
+            <h2 style="text-align: center; color:var(--black)";>Your Order</h2>
+        </div>
+        <div class="cart-content">
+            <table class="cart-table">
+                    <thead>
+                        <tr>
+                        <td></td>
+                        <td>Product</td>
+                        <td>Quantity</td>
+                        <td>Price Per Item</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if user.shopUser.cart.products %}
+                            {% for product in user.shopUser.cart.products.all %}
+                                <tr class="cart-item">
+                                    <td> <img src="{{product.product.img.url}}" alt="{{product.product.name}}"></td>
+                                    <td>{{product.product.name}}</td>
+                                    <td>
+                                        <div class="item-quantity">
+                                            <span class="cart-item-quantity">{{ product.quantity }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{product.product.price}}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+            </table>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                    <h3>Total</h3>
+                    <p class="cart-total-price" data-order-total>{{total_price}} L.E</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock bestsellersCollection%}
+
+{% block js%}
+    <script src={% static 'js/palceOrder.js'%}></script>
+{% endblock js%}
