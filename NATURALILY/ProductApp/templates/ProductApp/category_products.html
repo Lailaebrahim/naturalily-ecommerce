@@ -1,0 +1,23 @@
+{% extends "home/base.html" %}
+{% load static%}
+{% block title%} <title> Products </title> {% endblock title%}
+
+{% block bestsellersCollection %}
+            <section class="section shop" id="shop" aria-label="shop" data-section>
+                <div class="container">
+                    <div class="tittle-wrapper">
+                        <h2 class="h2 sextion-title" style="margin-bottom: 40px;" url="{% url 'get_category_products' category.id%}" our-products>{{category.category}}</h2>
+                    </div>
+                    <div class="arrows">
+                        <button class="left" aria-label="arrow-back" products-prev>
+                            <ion-icon class="arrow-back-action-btn" name="arrow-back-outline" ></ion-icon>
+                        </button>
+                        <button class="right" aria-label="arrow-forward" products-next>
+                            <ion-icon class="arrow-back-action-btn" name="arrow-forward-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <ul class="products-list" products-list>
+                    </ul>
+                </div>
+            </section>
+{% endblock bestsellersCollection %}

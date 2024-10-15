@@ -1,0 +1,94 @@
+{% extends "home/base.html" %}
+{% load static%}
+{% block title%} <title> {{product.name}} </title> {% endblock title%}
+
+{% block bestsellersCollection %}
+<div class="product-container">
+    <div class="product-container-left">
+        <img src="{{ product.img.url}}"><br>
+    </div>
+    <div class="product-container-right">
+        <h2>{{product.name}}</h2>
+        <h3>Description: </h3>
+        <p>{{product.description}}</p>
+        <div class="price">
+            {% if product.quantity_in_stock > 0 %}
+                {% if product.offer %}
+                <span class="badge" aria-label="{{ product.offer }} off" data-discount={{product.offer.discount}}>{{ product.offer.offer }}</span>
+                <h3>Price before: <del class="price-old" data-price-before-offer={{product.price}}>{{product.price}}</del></h3>
+                <h3>Price After: <span class="price-new" style="display: inline; color: green;" data-price-after-offer></span></h3>
+                {% else %}
+                    <h3>Price :<span class="price-new" style="display: inline; color: green;">{{product.price}}</span></h3>
+                {% endif %}
+            {% else %}
+                <span class="badge" aria-label="{{ product.offer }} off" data-discount={{product.offer.discount}}>Out Of Stock</span>
+                <h3>Price :<span class="price-new" style="display: inline; color: green;">{{product.price}}</span></h3>
+            {% endif %}
+        </div>
+        <div class="product-actions">
+                {% if product.quantity_in_stock > 0%}
+                    <button class="action-btn" aria-label="add to cart" data-product-pk="{{product.pk}}" data-add-to-cart>
+                    <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                    </button>
+                {% endif%}
+                <button class="action-btn" aria-label="add to wishlist" data-product-pk="{{product.pk}}" data-add-to-wishlist>
+                    <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                </button>
+        </div></br>
+        <div class="reviews">
+            <h2>Reviews</h2>
+            <div class="arrows">
+                {% if product.reviews.all %}
+                <button class="right" aria-label="arrow-forward">
+                    <a href="{% url 'reviews' product.pk%}">
+                        <ion-icon class="arrow-back-action-btn" name="arrow-forward-outline"></ion-icon>
+                    </a>
+                </button>
+                {% else %}
+                <p style="margin: 20px;"> No Reviews Yet, Order now and tell us your review &#10084;</p>
+                {% endif %}
+            </div>
+            <ul class="product-review">
+                {% for review in product.reviews.all|slice:":4"%}
+                <li class="user-review">
+                    <div class="message-container">
+                        <div class="user">
+                            {% if review.shopUser.img %}
+                                <img class="user-avatar" src="{{review.shopUser.img.url}}" alt="User avatar">
+                            {% else %}
+                                <img class="user-avatar" src="{% static 'images/default.png'%}" alt="User avatar">
+                            {% endif %}
+                            <div class="user-name">{{review.shopUser.user.first_name}} {{review.shopUser.user.last_name}}</div>
+                        </div>
+                        <p class="user-comment">{{review.review}}</p>
+                        <div class="rating">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= review.rating %}
+                                    <ion-icon name="star" aria-hidden="true"></ion-icon>
+                                {% else %}
+                                    <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if review.shopUser.user == user%}
+                        <div class="rating">
+                            <a href="{% url 'review_update' product.pk review.pk%}" class="btn">Edit</a> 
+                            <a href="{% url 'review_delete' review.pk%}" class="btn" style="color: red;">Delete</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor%}
+            </ul>
+            {% if user.is_authenticated%}
+                <a href="{% url 'review_create' product.pk%}" class="btn btn-primary">Add Review</a>
+            {% endif%}
+        </div>
+    </div>
+</div>
+
+{% endblock bestsellersCollection%}
+
+{% block js%}
+<script src="{% static 'js/newPrice.js'%}"></script>
+{% endblock js%}

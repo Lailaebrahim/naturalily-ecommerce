@@ -1,0 +1,80 @@
+{% extends "home/base.html" %}
+{% load static%}
+{% block title%} <title> Categories </title> {% endblock title%}
+
+{% block bestsellersCollection %}
+    {% for category in categories %}
+            <section class="section shop" id="shop" aria-label="shop" data-section>
+                <div class="container">
+                    <div class="tittle-wrapper">
+                        <h2 class="h2 sextion-title" style="margin-bottom: 40px;" our-products>{{category.category}}</h2>
+                    </div>
+                    <div class="arrows">
+                            <button class="right" aria-label="arrow-forward">
+                                <a href="{% url 'category_products' category.id%}">
+                                    <ion-icon class="arrow-back-action-btn" name="arrow-forward-outline"></ion-icon>
+                                </a>
+                            </button>
+                    </div>
+                    <ul class="products-list" products-list>
+                        {% for product in category.products.all|slice:":4" %}
+                            <li class="scrollbar-item product">
+                                <div class="shop-card product-card">
+                                    <div class="card-banner img-holder">
+                                        <img src="{{product.img.url}}" width="300" height="300" loading="lazy" alt="{{product.name}}" class="product-img">
+                                        {% if product.quantity_in_stock > 0 %}
+                                            {% if product.offer %}
+                                                <span class="badge" aria-label="20% off">-20%</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge" aria-label="Out of stock">Out of stock</span>
+                                        {% endif %}
+
+                                        <div class="card-actions">
+                                            {% if product.quantity_in_stock > 0%}
+                                            <button class="action-btn" aria-label="add to cart" data-product-pk="{{product.pk}}" data-add-to-cart>
+                                                <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                                            </button>
+                                            {% endif%}
+                                            <button class="action-btn" aria-label="add to wishlist" data-product-pk="{{product.pk}}" data-add-to-wishlist>
+                                                <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-content">
+                                        {% if product.quantity_in_stock > 0 and product.offer%}
+                                            <div class="price">
+                                                <del class="price-old">{{product.price}}</del>
+                                            </div>
+                                        {% else %}
+                                            <div class="price">
+                                                <span class="price-new">{{product.price}}</span>
+                                            </div>
+                                        {% endif %}
+                                        <h3>
+                                            <a href="{% url 'product' product.pk%}" class="card-title">{{product.name}}</a>
+                                        </h3>
+                                        <p>{{product.description}}</p>
+
+                                        <div class="card-rating">
+                                            <div class="rating-wrapper" aria-label="5 star rating">
+                                                <ion-icon name="star" aria-hidden="true"></ion-icon>
+                                                <ion-icon name="star" aria-hidden="true"></ion-icon>
+                                                <ion-icon name="star" aria-hidden="true"></ion-icon>
+                                                <ion-icon name="star" aria-hidden="true"></ion-icon>
+                                                <ion-icon name="star" aria-hidden="true"></ion-icon>
+                                            </div>
+                                            <p class="rating-text">
+                                                {{product.getReviewsNum}} reviews
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor%}
+                    </ul>
+                </div>
+            </section>
+    {% endfor%}
+{% endblock bestsellersCollection %}
