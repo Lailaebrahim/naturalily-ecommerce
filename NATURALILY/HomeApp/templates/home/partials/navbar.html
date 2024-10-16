@@ -76,7 +76,7 @@
         <div class="mobile-navbar" data-navbar>
             <div class="wrapper">
                 <a href="" class="logo">
-                    <img src="{% static 'images/logo.png'%}" width="179" height="26" alt="NATURALILY">
+                    <img src="{% static 'images/logo1.png'%}" width="179" height="26" alt="NATURALILY">
                 </a>
                 <button class="nav-close-btn" aria-label="close menu" data-nav-close>
                     <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
@@ -153,7 +153,11 @@
                     <h3>Total</h3>
                     <p class="cart-total-price" data-cart-total>0 L.E</p>
             </div>
-            <button class="btn btn-primary" aria-label="checkout">Checkout</button>
+            {% if user.shopUser.cart.products.all %}
+                <a href="{% url 'place_order'%}">
+                    <button class="btn btn-primary" aria-label="checkout"> Order </button>
+                </a>
+            {% endif%}
         </div>
     </div> 
     <div class="overlay" data-cart-toggler data-cart-overlay></div>
