@@ -30,12 +30,12 @@
                         <label for="cashOnDelivery">Cash On Delivery</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" id="creditCard" name="payment_method" value="creditCard" required>
+                        <input type="radio" id="creditCard" name="payment_method" value="creditCard" required data-user-id={{user.shopUser.id}} data-creditCard-url="{% url 'create_checkout_session' %}" data-STRIPE-PUBLIC-KEY="{{ STRIPE_PUBLIC_KEY}}">
                         <label for="creditCard">Credit Card</label>
                     </div>
                 </div>
             </div>
-            <input type="submit" id="submitButton" value="Submit Order">
+            <input type="submit" id="checkout-button" value="Submit Order">
         </form>
     </div>
     <div class="cart-checkout grid-item">
@@ -81,5 +81,6 @@
 {% endblock bestsellersCollection%}
 
 {% block js%}
+    <script src="https://js.stripe.com/v3/"></script>
     <script src={% static 'js/palceOrder.js'%}></script>
 {% endblock js%}

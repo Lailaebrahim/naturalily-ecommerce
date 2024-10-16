@@ -12,8 +12,10 @@ urlpatterns = [
          name="remove_from_wishlist"),
     path('create-checkout-session/', views.createCheckoutSessionView.as_view(),
          name="create_checkout_session"),
+    path('webhooks/stripe/', views.stripeWebHook, name="stripe_webhook"),
     path('', views.placeOrder, name="place_order"),
-    path('api/order-accepted/', views.orderAccepted, name="order_accepted"),
+     path('api/order-accepted/', views.orderAccepted, name="order_accepted"),
+    path('order-unaccepted/', views.orderUnAccepted, name="order_unaccepted"),
     path('details/<int:pk>/',  views.orderDetailView.as_view(), name="order_details"),
     path('history/',  views.orderHistoryView.as_view(), name="orders_history"),
 

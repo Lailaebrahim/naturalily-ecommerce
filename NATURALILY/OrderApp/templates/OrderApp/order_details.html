@@ -22,7 +22,7 @@
                         {% if order.products %}
                             {% for product in order.products.all %}
                                 <tr class="cart-item">
-                                    <td> <a href="{% url 'product' product.pk%}"><img src="{{product.product.img.url}}" alt="{{product.product.name}}"></a></td>
+                                    <td> <a href="{% url 'product' product.product.pk%}"><img src="{{product.product.img.url}}" alt="{{product.product.name}}"></a></td>
                                     <td>{{product.product.name}}</td>
                                     <td>
                                         <div class="item-quantity">

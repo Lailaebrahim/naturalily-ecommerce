@@ -4,8 +4,16 @@ from django.contrib.auth.decorators import login_required
 from .models import Cart, CartProduct, WishList, WishListProduct, Order, OrderProduct
 from django.http import JsonResponse
 from ProductApp.models import Product
+from django.views import View
 from django.views.generic import DetailView, ListView
+from django.conf import settings
+import stripe
+from urllib.parse import urlencode
 from django.shortcuts import redirect
+import json
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from UserApp.models import ShopUser
 
 
 @login_required
@@ -190,7 +198,10 @@ def placeOrder(request):
     cart = get_object_or_404(Cart, shopUser=request.user.shopUser)
     cart_products = cart.products.all()
     total_price = sum([product.total_price for product in cart_products])
-    return render(request, 'OrderApp/place_order.html', {'cart_products': cart_products, 'total_price': total_price})
+    return render(request, 'OrderApp/place_order.html', {'cart_products': cart_products,
+                                                         'total_price': total_price,
+                                                         "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLISHABLE_KEY})
+
 
 @login_required
 def orderAccepted(request):
@@ -207,7 +218,8 @@ def orderAccepted(request):
         delivery_destination=addresse,
         phone=phone,
         payment_method=payment_method,
-        total_price=sum([product.total_price for product in cart.products.all()])
+        total_price=sum(
+            [product.total_price for product in cart.products.all()])
     )
 
     for cart_product in cart.products.all():
@@ -221,10 +233,96 @@ def orderAccepted(request):
 
     return redirect('order_details', pk=order.pk)
 
-    
+
+@login_required
+def orderUnAccepted(request):
+    return render(request, 'OrderApp/order_unaccepted')
+
+
 class orderDetailView(DetailView, LoginRequiredMixin):
     model = Order
     template_name = "OrderApp/order_details.html"
+
+
+class createCheckoutSessionView(View):
+    def post(self, request, *args, **kargs):
+        stripe.api_key = settings.STRIPE_SECERT_KEY
+        cart = get_object_or_404(Cart, shopUser=request.user.shopUser)
+        data = json.loads(request.body)
+
+        if not cart.products.exists():
+            return JsonResponse({'status': '404', 'message': 'No products in cart'})
+
+        line_items = []
+        for cart_product in cart.products.all():
+            line_items.append({
+                'price_data': {
+                    'currency': 'egp',
+                    'product_data': {
+                        'name': cart_product.product.name,
+                    },
+                    'unit_amount': int(cart_product.product.price * 100),
+                },
+                'quantity': cart_product.quantity,
+            })
+
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=line_items,
+                mode='payment',
+                metadata=data,
+                success_url="http://127.0.0.1:8000/order/history/",
+                cancel_url="http://127.0.0.1:8000/order/order-unaccepted/",
+            )
+            print(checkout_session)
+            return JsonResponse({
+                'id': checkout_session.id
+            })
+        except stripe.error.InvalidRequestError as e:
+            return JsonResponse({'status': '400', 'message from create checkout session': str(e)}, status=400)
+
+
+@csrf_exempt
+def stripeWebHook(request):
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRECT
+
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        return JsonResponse({'status': '400', 'message': 'Invalid payload'}, status=400)
+    except stripe.error.SignatureVerificationError as e:
+        return JsonResponse({'status': '400', 'message': 'Invalid signature'}, status=400)
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        data = session.metadata
+        shopuser = get_object_or_404(ShopUser, id=data['userID'])
+        order = Order.objects.create(
+            shopUser=shopuser,
+            firstname=data['firstname'],
+            lastname=data['lastname'],
+            delivery_destination=data['addresse'],
+            phone=data['phone'],
+            payment_method=data['payment_method'],
+            total_price=session.amount_total / 100
+        )
+        cart = get_object_or_404(Cart, shopUser=shopuser)
+        for cart_product in cart.products.all():
+            order_product = OrderProduct.objects.create(
+                order=order, product=cart_product.product)
+            order.products.add(order_product)
+            cart_product.delete()
+        cart.delete()
+        order.save()
+
+    return JsonResponse({'status': '200', 'message': 'Webhook received'}, status=200)
 
 
 class orderHistoryView(ListView, LoginRequiredMixin):
@@ -234,4 +332,3 @@ class orderHistoryView(ListView, LoginRequiredMixin):
 
     def get_queryset(self):
         return Order.objects.filter(shopUser=self.request.user.shopUser).order_by('-ordered_at')
-    
