@@ -16,6 +16,7 @@
                         <td>Product</td>
                         <td>Quantity</td>
                         <td>Price Per Item</td>
+                        <td> offer </td>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +31,7 @@
                                         </div>
                                     </td>
                                     <td>{{product.product.price}}</td>
+                                    <td> {% if product.product.offer%}{{product.product.offer.offer}} {%else%} None {% endif%}</td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
