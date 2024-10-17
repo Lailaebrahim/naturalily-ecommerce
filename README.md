@@ -134,13 +134,15 @@ Naturalily is an e-commerce web application designed to provide a seamless shopp
         python manage.py runserver
         ```
     ```
-
+    
 ## Usage
 
 1. Register or log in to your account.
 2. Browse the product catalog and add items to your cart.
 3. Proceed to checkout and complete the payment process.
 4. Track your order status from your account dashboard.
+
+![Usage GIF](../usage.gif)
 
 ## Contributing
 
@@ -149,3 +151,11 @@ Contributions are welcome! Please fork the repository and create a pull request 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any inquiries or support, please contact:
+
+- **Laila Ebrahim**
+- **Email**: lailaebraheim108@gmail.com
+- **GitHub**: [Lailaebrahim](https://github.com/Lailaebrahim)
