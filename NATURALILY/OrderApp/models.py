@@ -21,6 +21,8 @@ class CartProduct(models.Model):
 
     @property
     def total_price(self):
+        if self.product.offer:
+            return self.quantity * (self.product.price - (self.product.price * self.product.offer.discount))
         return self.product.price * self.quantity
 
     class Meta:
