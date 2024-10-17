@@ -142,7 +142,7 @@ Naturalily is an e-commerce web application designed to provide a seamless shopp
 3. Proceed to checkout and complete the payment process.
 4. Track your order status from your account dashboard.
 
-![Usage GIF](../NATURALILY.gif)
+![Usage GIF](NATURALILY.gif)
 
 ## Contributing
 
