@@ -1,12 +1,8 @@
-# ALX Backend Specialization Portfolio Project
-
 # Naturalily E-commerce Web Application
-
-Welcome to the ALX Backend Specialization Portfolio Project!
 
 ## Overview
 
-Naturalily is an e-commerce web application designed to provide a seamless shopping experience for users looking to purchase natural and organic products. The application features a user-friendly interface, secure payment processing, and efficient order management.
+Naturalily is an e-commerce web application designed to provide a seamless shopping experience for users looking to purchase natural and organic products. The application features a user-friendly inte[...]  
 
 ## Features
 
@@ -116,7 +112,7 @@ Naturalily is an e-commerce web application designed to provide a seamless shopp
     stripe listen --forward-to http://127.0.0.1:8000/orders/webhooks/stripe/
     ```
 
-    > **Note**: starting the Stripe webhook forwarding is essential for receiving real-time notifications about events related to your Stripe account, such as successful payments, refunds, and disputes. This allows your application to respond to these events promptly and update the order status accordingly.
+    > **Note**: starting the Stripe webhook forwarding is essential for receiving real-time notifications about events related to your Stripe account, such as successful payments, refunds, and dispute[...]  
 
 13. Modify the Stripe public key, secret key, and webhook key in `settings.py`:
     ```python
@@ -125,7 +121,7 @@ Naturalily is an e-commerce web application designed to provide a seamless shopp
     STRIPE_WEBHOOK_SECRET = 'your_stripe_webhook_secret_key'
     ```
 
-    > **Note**: The Stripe public key and secret key are used to authenticate your application with the Stripe API. The webhook secret key is used to verify the authenticity of the events received from Stripe, ensuring that they are not tampered with.
+    > **Note**: The Stripe public key and secret key are used to authenticate your application with the Stripe API. The webhook secret key is used to verify the authenticity of the events received fro[...]  
 
 14. Start the development server:
         ```bash
@@ -133,7 +129,10 @@ Naturalily is an e-commerce web application designed to provide a seamless shopp
         cd NATURALILY
         python manage.py runserver
         ```
-    ```
+    
+## Demo
+
+You can watch a demo of the application [here](https://drive.google.com/file/d/1XljO8evxLmdAusRnxOp9m5jJ9ouqEC4F/view).
 
 ## Usage
 
@@ -157,5 +156,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 For any inquiries or support, please contact:
 
 - **Laila Ebrahim**
-- **Email**: lailaebraheim108@gmail.com
+- **Email**: lailaebrahimtawfik@gmail.com
 - **GitHub**: [Lailaebrahim](https://github.com/Lailaebrahim)
