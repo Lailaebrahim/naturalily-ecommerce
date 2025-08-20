@@ -2,7 +2,7 @@
 
 ## Overview
 
-Naturalily is an e-commerce web application designed to provide a seamless shopping experience for users looking to purchase natural and organic products. The application features a user-friendly inte[...]  
+Naturalily is an e-commerce web application designed to provide a seamless shopping experience for users looking to purchase natural and organic products. The application features a user-friendly interface, secure payment processing, and efficient order management.
 
 ## Features
 
@@ -112,7 +112,7 @@ Naturalily is an e-commerce web application designed to provide a seamless shopp
     stripe listen --forward-to http://127.0.0.1:8000/orders/webhooks/stripe/
     ```
 
-    > **Note**: starting the Stripe webhook forwarding is essential for receiving real-time notifications about events related to your Stripe account, such as successful payments, refunds, and dispute[...]  
+    > **Note**: starting the Stripe webhook forwarding is essential for receiving real-time notifications about events related to your Stripe account, such as successful payments, refunds, and disputes. This allows your application to respond to these events promptly and update the order status accordingly.
 
 13. Modify the Stripe public key, secret key, and webhook key in `settings.py`:
     ```python
@@ -121,7 +121,7 @@ Naturalily is an e-commerce web application designed to provide a seamless shopp
     STRIPE_WEBHOOK_SECRET = 'your_stripe_webhook_secret_key'
     ```
 
-    > **Note**: The Stripe public key and secret key are used to authenticate your application with the Stripe API. The webhook secret key is used to verify the authenticity of the events received fro[...]  
+    > **Note**: The Stripe public key and secret key are used to authenticate your application with the Stripe API. The webhook secret key is used to verify the authenticity of the events received from Stripe, ensuring that they are not tampered with.
 
 14. Start the development server:
         ```bash
